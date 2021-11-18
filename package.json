@@ -5,9 +5,9 @@
   "description": "",
   "scripts": {
     "package": "gulp package",
-    "build": "gulp build && gulp link",
+    "build": "gulp build",
     "build:watch": "gulp watch",
-    "clean": "gulp clean && gulp link --clean",
+    "clean": "gulp clean",
     "update": "npm install --save-dev gitlab:foundry-projects/foundry-pc/foundry-pc-types github:ruipin/fvtt-lib-wrapper"
   },
   "author": "",

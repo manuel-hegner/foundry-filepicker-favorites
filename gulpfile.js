@@ -13,6 +13,7 @@ const sass = require('gulp-sass')(require('sass'));
 const git = require('gulp-git');
 
 const argv = require('yargs').argv;
+const { src } = require('gulp');
 
 sass.compiler = require('sass');
 
@@ -31,11 +32,7 @@ function getConfig() {
 function getManifest() {
 	const json = {};
 
-	/*if (fs.existsSync('src')) {
-		json.root = 'src';
-	} else {*/
-		json.root = 'dist';
-	//}
+	json.root = 'dist';
 
 	const modulePath = path.join(json.root, 'module.json');
 	const systemPath = path.join(json.root, 'system.json');
@@ -334,6 +331,9 @@ async function packageBuild() {
 				return;
 			}
 
+			console.log(path.join(manifest.root, manifest.name))
+			gulp.src(path.join(manifest.root, manifest.name)).pipe(stripJsonComments()).pipe(gulp.dest('package'))
+
 			// Ensure there is a directory to hold all the packaged versions
 			fs.ensureDirSync('package');
 
@@ -360,6 +360,8 @@ async function packageBuild() {
 			zip.directory('dist/', manifest.file.name);
 
 			zip.finalize();
+
+			
 		} catch (err) {
 			return reject(err);
 		}
