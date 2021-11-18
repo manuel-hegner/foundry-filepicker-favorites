@@ -1,0 +1,36 @@
+{
+  "name": "foundry-filepicker-favorites",
+  "title": "Filepicker Favorites",
+  "description": "A simple module to add directories as favorites to the file picker",
+  "version": "1.0.0",
+  "author": "manuel-hegner",
+  /*"authors": [
+    {
+      "name": "",
+      "email": "",
+      "url": ""
+    }
+  ],*/
+  "scripts": [],
+  "esmodules": [
+    "foundry-filepicker-favorites.js"
+  ],
+  "styles": [
+    "foundry-filepicker-favorites.css"
+  ],
+  "dependencies": [
+    {
+      "name": "lib-wrapper"
+    }
+  ],
+  "packs": [],
+  "languages": [],
+  "minimumCoreVersion": "0.8.9",
+  "url": "https://github.com/manuel-hegner/foundry-filepicker-favorites",
+  "manifest": "",
+  "download": "",
+  "license": "",
+  "readme": "",
+  "bugs": "",
+  "changelog": ""
+}

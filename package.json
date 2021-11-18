@@ -1,0 +1,32 @@
+{
+  "private": true,
+  "name": "foundry-filepicker-favorites",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "package": "gulp package",
+    "build": "gulp build && gulp link",
+    "build:watch": "gulp watch",
+    "clean": "gulp clean && gulp link --clean",
+    "update": "npm install --save-dev gitlab:foundry-projects/foundry-pc/foundry-pc-types github:ruipin/fvtt-lib-wrapper"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "archiver": "^5.3.0",
+    "chalk": "^4.1.2",
+    "foundry-pc-types": "gitlab:foundry-projects/foundry-pc/foundry-pc-types",
+    "libWrapper": "github:ruipin/fvtt-lib-wrapper",
+    "fs-extra": "^10.0.0",
+    "gulp": "^4.0.2",
+    "gulp-git": "^2.10.1",
+    "gulp-less": "^5.0.0",
+    "gulp-sass": "^5.0.0",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "json-stringify-pretty-compact": "^3.0.0",
+    "gulp-strip-json-comments": "^4.0.1",
+    "sass": "^1.43.4",
+    "typescript": "^4.4.4",
+    "yargs": "^17.2.1"
+  }
+}
