@@ -30,7 +30,7 @@
   "manifest": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/latest/download/module.json",
   "download": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/download/v1.0.0/foundry-filepicker-favorites-v1.0.0.zip",
   "license": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/LICENSE",
-  "readme": "",
-  "bugs": "",
-  "changelog": ""
+  "readme": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/README.md",
+  "bugs": "https://github.com/manuel-hegner/foundry-filepicker-favorites/issues",
+  "changelog": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/CHANGELOG.md"
 }
