@@ -1,8 +1,8 @@
 {
   "name": "foundry-filepicker-favorites",
-  "title": "Filepicker Favorites",
-  "description": "A simple module to add directories as favorites to the file picker",
-  "version": "1.0.1",
+  "title": "Filepicker Improvements",
+  "description": "A simple module to add favorite directories and a search to the file picker",
+  "version": "1.1.0",
   "author": "manuel-hegner",
   /*"authors": [
     {
