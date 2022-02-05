@@ -20,7 +20,7 @@
     "gulp": "^4.0.2",
     "gulp-git": "^2.10.1",
     "gulp-less": "^5.0.0",
-    "gulp-sass": "^5.0.0",
+    "gulp-sass": "^5.1.0",
     "gulp-strip-json-comments": "^4.0.1",
     "gulp-typescript": "^6.0.0-alpha.1",
     "json-stringify-pretty-compact": "^3.0.0",
