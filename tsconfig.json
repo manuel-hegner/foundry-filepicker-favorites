@@ -6,6 +6,8 @@
 			"ES6",
 			"ES2017"
 		],
-		"types": ["foundry-pc-types"]
+		"types": ["@league-of-foundry-developers/foundry-vtt-types/index-lenient"],
+		"moduleResolution": "node",
+		"strictNullChecks": true,
 	}
 }
