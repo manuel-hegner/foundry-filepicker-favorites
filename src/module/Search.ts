@@ -119,7 +119,7 @@ Hooks.once('ready', async function() {
         let counter = 0;
 		let open = [...roots];
 		let target:string|undefined;
-		while(target = open.pop()) {
+		while((target = open.pop())!==undefined) {
 			let search = await FilePicker.browse(storage as any, target, options);
 			open.push(...search.dirs);
             for(const f of search.files) {
