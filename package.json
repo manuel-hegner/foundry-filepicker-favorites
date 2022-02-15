@@ -15,7 +15,7 @@
   "devDependencies": {
     "@league-of-foundry-developers/foundry-vtt-types": "^9.249.2",
     "archiver": "^5.3.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.0.0",
     "fs-extra": "^10.0.0",
     "gulp": "^4.0.2",
     "gulp-git": "^2.10.1",
