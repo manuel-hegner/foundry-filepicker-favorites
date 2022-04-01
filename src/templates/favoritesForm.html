@@ -3,14 +3,16 @@
         <tr>
             <th>Label</th>
             <th>Source</th>
-            <th>Path</th>
+            <th colspan="2">Path</th>
             <td><button type="button" id="addFavorite"><i class="fas fa-plus"></i></button></td>
         </tr>
         {{#each this.data}}
         <tr>
             <td><input  required type="text" name="{{@key}}.label" value="{{this.label}}"></td>
             <td><select required name="{{@key}}.source">{{selectOptions ../sources selected=this.source labelAttr='label'}}</select></td>
-            <td><input  required type="text" name="{{@key}}.path" value="{{this.path}}"></td>
+            <td><input required type="text"  name="{{@key}}.path" value="{{this.path}}"></td>
+            <td style="padding-right: .5em;">{{filePicker target=(concat @key ".path") type="folder"}}</td>
+                <!---->
             <td><button type="button" data-index="{{@key}}" class="deleteFavoriteOption"><i class="fas fa-trash-alt" style="color:darkred"></i></button></td>
         </tr>
         {{/each}}

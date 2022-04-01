@@ -121,6 +121,10 @@ Hooks.once('ready', async function() {
 		let target:string|undefined;
 		while((target = open.pop())!==undefined) {
 			let search = await FilePicker.browse(storage as any, target, options);
+
+			if(search.private && !game.user?.hasRole('GAMEMASTER'))
+				continue;
+
 			open.push(...search.dirs);
             for(const f of search.files) {
                 ALL_FILES.push({file: f, name: f.toLowerCase()});
