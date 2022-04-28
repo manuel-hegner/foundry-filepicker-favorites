@@ -114,22 +114,41 @@ Hooks.once('ready', async function() {
 	});
 
 	async function collectFiles(storage:string, roots:string[], options:any):Promise<void> {
-		if ( game.world && !(game.user as any).can("FILES_BROWSE") ) return;
-	
-        let counter = 0;
-		let open = [...roots];
-		let target:string|undefined;
-		while((target = open.pop())!==undefined) {
-			let search = await FilePicker.browse(storage as any, target, options);
+		if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
 
-			if(search.private && !game.user?.hasRole('GAMEMASTER'))
-				continue;
+		let counter = 0;
 
-			open.push(...search.dirs);
-            for(const f of search.files) {
-                ALL_FILES.push({file: f, name: f.toLowerCase()});
-                counter++;
-            }
+		//forge vtt shortcut
+		if (storage == "forgevtt" && typeof (ForgeVTT) !== "undefined" && ForgeVTT.usingTheForge)  {
+			// Running on the Forge, retrieve the entire assets library of the user using a single Forge API call
+			const assets = await ForgeAPI.call("assets");
+			for(const f of assets.assets) {
+				if(f.url) {
+					ALL_FILES.push({file: f.url, name: f.name.toLowerCase()});
+				}
+			}
+		}
+
+		//default traverse
+		else {	
+			let open = [...roots];
+			let target:string|undefined;
+			while((target = open.pop())!==undefined) {
+				try {
+					let search = await FilePicker.browse(storage as any, target, options);
+
+					if(search.private && !game.user?.hasRole('GAMEMASTER'))
+						continue;
+
+					open.push(...search.dirs);
+					for(const f of search.files) {
+						ALL_FILES.push({file: f, name: f.toLowerCase()});
+						counter++;
+					}
+				} catch (error) {
+					// if this folder is not accessible (e.g. private) fail silently
+				}
+			}
 		}
         console.log("foundry-filepicker-favorites | Indexed "+counter+" images from "+storage);
 	}

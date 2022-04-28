@@ -36,7 +36,7 @@ Hooks.once('ready', async function() {
 		let favorites:Favorite[] = []
 		let split = oldSetting.split('|')
 		for(let i = 0;i<split.length;i+=3) {
-			favorites.push({label: split[i], source: split[i+1], path: split[i+2]})
+			favorites.push({label: split[i], source: split[i+1] as FilePicker.SourceType, path: split[i+2]})
 		}
 		game.settings.set("foundry-filepicker-favorites", "favorites-location", favorites);
 	}
@@ -45,7 +45,7 @@ Hooks.once('ready', async function() {
 
 export class Favorite {
 	label: string
-	source: string
+	source: FilePicker.SourceType
 	path: string
 }
 

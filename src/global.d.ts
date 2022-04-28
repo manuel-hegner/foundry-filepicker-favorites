@@ -8,4 +8,12 @@ declare global {
             'foundry-filepicker-favorites.search-max-results': number;
         }
     }
+
+    class ForgeVTT {
+        static usingTheForge: boolean;
+    }
+
+    class ForgeAPI {
+        static call(endpoint:string): Promise<any>
+    }
 }
