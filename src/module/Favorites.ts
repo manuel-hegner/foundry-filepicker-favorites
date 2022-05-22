@@ -36,6 +36,7 @@ Hooks.once('ready', function() {
 					}
 				} catch (error) {
 					// if this folder is not accessible (e.g. private) fail silently
+					console.log("foundry-filepicker-favorites | Could not browse to  "+fav.path, error);
 				}
 			}
 
