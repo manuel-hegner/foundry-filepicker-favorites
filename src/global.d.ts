@@ -6,6 +6,7 @@ declare global {
         interface Values {
             'foundry-filepicker-favorites.favorites-location': Favorite[];
             'foundry-filepicker-favorites.search-max-results': number;
+            'foundry-filepicker-favorites.search-excludes': string[];
         }
     }
 

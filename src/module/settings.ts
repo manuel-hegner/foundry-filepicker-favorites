@@ -1,4 +1,3 @@
-
 Hooks.once('init', async function() {
 	game.settings.register("foundry-filepicker-favorites", "favorites-location", {
 		scope: "world",
@@ -23,6 +22,24 @@ Hooks.once('init', async function() {
 		type: Number,
 		default: 100
 	});
+
+	game.settings.register("foundry-filepicker-favorites", "search-excludes", {
+		scope: "world",
+		config: false,
+		type: Array,
+		default: [],
+		onChange: () => window.location.reload()
+	});
+
+	game.settings.registerMenu("foundry-filepicker-favorites", "search-excludes-menu", {
+		name: "Exclude Search Directories",
+		label: "Exclude Search Directories",
+		icon: "fas fa-cog",
+		type: SearchForm,
+		restricted: true
+	});
+
+
 });
 
 // backwards compatibility /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,5 +124,64 @@ class FavoritesForm extends FormApplication<FormApplicationOptions, FavoritesDat
 		let flat = foundry.utils.expandObject(formData);
 		let result:Favorite[] = Object.values(flat);
 		game.settings.set("foundry-filepicker-favorites", "favorites-location", result);
+	}
+}
+
+class SearchForm extends FormApplication<FormApplicationOptions, string[], string[]> {
+	constructor() {
+		super(game.settings.get("foundry-filepicker-favorites", "search-excludes"))
+	}
+	static get defaultOptions() {
+		return mergeObject(super.defaultOptions, {
+			classes: ['form'],
+			popOut: true,
+			template: '/modules/foundry-filepicker-favorites/templates/searchForm.html',
+			id: 'foundry-filepicker-search-form',
+			title: 'Exclude Search Directories',
+		});
+	}
+
+	getData() {
+		return this.object;
+	}
+
+	activateListeners(html) {
+		super.activateListeners(html);
+		html.find("#addPath").on("click", this._addRow.bind(this));
+		html.find(".deletePathOption").on("click", this._removeRow.bind(this));
+	}
+
+	_toArray(value:any): string[] {
+		if(value) {
+			let flat = foundry.utils.expandObject(value);
+			if(flat.excludes) {
+				let result:string[] = Object.values(flat.excludes);
+				return result;
+			}
+		}
+		return [];
+	}
+
+	_addRow(e:Event) {
+		let result = this._toArray(this._getSubmitData());
+		result.push("placeholder");
+		this.object = result;
+		this.render(false, {height: "auto"} as any);
+	}
+
+	_removeRow(e:Event) {
+		let result = this._toArray(this._getSubmitData());
+		let index = (e.currentTarget as HTMLButtonElement).dataset.index;
+		if(index) {
+			result.splice(parseInt(index), 1);
+			this.object = result;
+			this.render(false, {height: "auto"} as any);
+		}
+	}
+
+	async _updateObject(event, formData) {
+		let result = this._toArray(formData);
+		this.object = result;
+		game.settings.set("foundry-filepicker-favorites", "search-excludes", result);
 	}
 }

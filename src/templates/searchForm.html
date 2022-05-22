@@ -1,0 +1,21 @@
+<form class="flexcol">
+    <table>
+        <tr>
+            <th colspan="2">Path</th>
+            <td><button type="button" id="addPath"><i class="fas fa-plus"></i></button></td>
+        </tr>
+        {{#each this}}
+        <tr>
+            <td><input required type="text"  name="excludes.{{@key}}" value="{{this}}"></td>
+            <td style="padding-right: .5em;">{{filePicker target=(concat "excludes." @key) type="folder"}}</td>
+                <!---->
+            <td><button type="button" data-index="{{@key}}" class="deletePathOption"><i class="fas fa-trash-alt" style="color:darkred"></i></button></td>
+        </tr>
+        {{/each}}
+    </table>
+    <footer class="sheet-footer flexrow">
+        <button type="submit" name="submit">
+        <i class="fa fa-check"></i> OK
+    </button>
+</footer>
+</form>

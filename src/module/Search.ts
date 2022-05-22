@@ -99,10 +99,15 @@ class SearchFile {
 
 var ALL_FILES:SearchFile[] = [];
 Hooks.once('ready', async function() {
+
+	let excludes = game.settings.get("foundry-filepicker-favorites", "search-excludes");
+	let usingForge = typeof (ForgeVTT) !== "undefined" && ForgeVTT.usingTheForge;
+
 	let fp = new FilePicker({type: 'imagevideo'} as any) as any;
 	let options = {
 		extensions: fp.extensions,
-		wildcard: false
+		wildcard: false,
+		recursive: true
 	}
 
 	let promises:Promise<void>[] = [];
@@ -117,37 +122,33 @@ Hooks.once('ready', async function() {
 		if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
 
 		let counter = 0;
+	
+		let open = [...roots];
+		let target:string|undefined;
+		while((target = open.pop())!==undefined) {
 
-		//forge vtt shortcut
-		if (storage == "forgevtt" && typeof (ForgeVTT) !== "undefined" && ForgeVTT.usingTheForge)  {
-			// Running on the Forge, retrieve the entire assets library of the user using a single Forge API call
-			const assets = await ForgeAPI.call("assets");
-			for(const f of assets.assets) {
-				if(f.url) {
-					ALL_FILES.push({file: f.url, name: f.name.toLowerCase()});
-				}
+			if(excludes.includes(target)) {
+				console.log("foundry-filepicker-favorites | Skipping "+target+" because it is excluded");
+				continue;
 			}
-		}
 
-		//default traverse
-		else {	
-			let open = [...roots];
-			let target:string|undefined;
-			while((target = open.pop())!==undefined) {
-				try {
-					let search = await FilePicker.browse(storage as any, target, options);
+			try {
 
-					if(search.private && !game.user?.hasRole('GAMEMASTER'))
-						continue;
+				let search = await FilePicker.browse(storage as any, target, options);
+				if(search.private && !game.user?.hasRole('GAMEMASTER'))
+					continue;
 
+				//if not using the shortcut on the forge (recursive option)
+				if( ! (usingForge && (storage === "forgevtt" || (storage === 'forge-bazaar' && (target.match(/\//g)||[]).length > 0)))) {
 					open.push(...search.dirs);
-					for(const f of search.files) {
-						ALL_FILES.push({file: f, name: f.toLowerCase()});
-						counter++;
-					}
-				} catch (error) {
-					// if this folder is not accessible (e.g. private) fail silently
 				}
+				
+				for(const f of search.files) {
+					ALL_FILES.push({file: f, name: f.toLowerCase()});
+					counter++;
+				}
+			} catch (error) {
+				// if this folder is not accessible (e.g. private) fail silently
 			}
 		}
         console.log("foundry-filepicker-favorites | Indexed "+counter+" images from "+storage);
