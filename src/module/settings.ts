@@ -9,6 +9,7 @@ Hooks.once('init', async function() {
 	game.settings.registerMenu("foundry-filepicker-favorites", "favorites", {
 		name: "Favorites Settings",
 		label: "Favorites Settings",
+		hint: 'Most changes require a reload.',
 		icon: "fas fa-cog",
 		type: FavoritesForm,
 		restricted: true
@@ -34,6 +35,7 @@ Hooks.once('init', async function() {
 	game.settings.registerMenu("foundry-filepicker-favorites", "search-excludes-menu", {
 		name: "Exclude Search Directories",
 		label: "Exclude Search Directories",
+		hint: 'Most changes require a reload.',
 		icon: "fas fa-cog",
 		type: SearchForm,
 		restricted: true

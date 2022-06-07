@@ -24,27 +24,36 @@ Hooks.once('ready', function() {
 		return prom.then(async function(html) {
 			let root = html[0]
 
-			let favorites:Favorite[] = game.settings.get("foundry-filepicker-favorites", "favorites-location")
-
-			let accessible:Favorite[] = [];
-			for(const fav of favorites) {
-				try {
-					let search = await FilePicker.browse(fav.source, fav.path, {});
-
-					if(!search.private || game.user?.hasRole('GAMEMASTER')) {
-						accessible.push(fav);
-					}
-				} catch (error) {
-					// if this folder is not accessible (e.g. private) fail silently
-					console.log("foundry-filepicker-favorites | Could not browse to  "+fav.path, error);
-				}
-			}
-
-			let inner = (await renderTemplate("modules/foundry-filepicker-favorites/templates/filepicker.html", accessible));
+			let inner = (await renderTemplate("modules/foundry-filepicker-favorites/templates/filepicker.html", await getAccessible()));
 			let node = $(inner)[0];
 			root.insertBefore(node, root.firstChild);
 			return html;
 		});
 	}, 'WRAPPER');
+
+	let accessibleCache:Favorite[];
+	async function getAccessible():Promise<Favorite[]> {	
+		if(accessibleCache) {
+			return accessibleCache;
+		}
+		let favorites:Favorite[] = game.settings.get("foundry-filepicker-favorites", "favorites-location")
+
+		let accessible:Favorite[] = [];
+		for(const fav of favorites) {
+			try {
+				let search = await FilePicker.browse(fav.source, fav.path, {});
+
+				if(!search.private || game.user?.hasRole('GAMEMASTER')) {
+					accessible.push(fav);
+				}
+			} catch (error) {
+				// if this folder is not accessible (e.g. private) fail silently
+				console.log("foundry-filepicker-favorites | Could not browse to  "+fav.path, error);
+			}
+		}
+
+		accessibleCache = accessible;
+		return accessible;
+	}
 
 });
