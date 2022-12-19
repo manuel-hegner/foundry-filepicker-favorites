@@ -26,6 +26,6 @@
     "json-stringify-pretty-compact": "^3.0.0",
     "sass": "^1.57.0",
     "typescript": "^4.5.3",
-    "yargs": "^17.4.0"
+    "yargs": "^17.6.2"
   }
 }
