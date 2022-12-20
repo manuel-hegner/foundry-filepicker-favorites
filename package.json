@@ -1,31 +1,31 @@
 {
   "private": true,
   "name": "foundry-filepicker-favorites",
-  "version": "1.2.5",
   "description": "",
   "scripts": {
-    "package": "gulp package",
-    "build": "gulp build",
-    "build:watch": "gulp watch",
-    "clean": "gulp clean",
-    "update": "npm install"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch --progress",
+    "clean": ""
   },
   "author": "",
   "license": "",
+  "dependencies": {
+    "bottleneck": "^2.19.5",
+    "ndx": "^1.0.2",
+    "ndx-query": "^1.0.1",
+    "ndx-serializable": "^1.0.0"
+  },
   "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "^9.255.3",
-    "archiver": "^5.3.1",
-    "chalk": "^4.1.2",
-    "fs-extra": "^10.0.1",
-    "gulp": "^4.0.2",
-    "gulp-git": "^2.10.1",
-    "gulp-less": "^5.0.0",
-    "gulp-sass": "^5.1.0",
-    "gulp-strip-json-comments": "^4.0.1",
-    "gulp-typescript": "^6.0.0-alpha.1",
-    "json-stringify-pretty-compact": "^3.0.0",
-    "sass": "^1.57.0",
-    "typescript": "^4.5.3",
-    "yargs": "^17.6.2"
+    "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.1",
+    "mini-css-extract-plugin": "^2.6.1",
+    "sass": "^1.54.9",
+    "sass-loader": "^13.0.2",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.8.3",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   }
 }

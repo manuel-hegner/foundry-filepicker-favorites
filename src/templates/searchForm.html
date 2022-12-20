@@ -1,21 +1,45 @@
 <form class="flexcol">
-    <table>
-        <tr>
-            <th colspan="2">Path</th>
-            <td><button type="button" id="addPath"><i class="fas fa-plus"></i></button></td>
-        </tr>
-        {{#each this}}
-        <tr>
-            <td><input required type="text"  name="excludes.{{@key}}" value="{{this}}"></td>
-            <td style="padding-right: .5em;">{{filePicker target=(concat "excludes." @key) type="folder"}}</td>
-                <!---->
-            <td><button type="button" data-index="{{@key}}" class="deletePathOption"><i class="fas fa-trash-alt" style="color:darkred"></i></button></td>
-        </tr>
-        {{/each}}
-    </table>
+    <div>
+        This will recreate the search cache. Use this if your image directory content changed.
+        <button type="button" id="storeIndex"><i class="fas fa-floppy-disk"></i>Recreate Search Cache</button>
+    </div>
+    <div>
+        Include only files with these prefixes:
+        <table>
+            <tr>
+                <th colspan="2">Path</th>
+                <td><button type="button" id="addIncludePath"><i class="fas fa-plus"></i></button></td>
+            </tr>
+            {{#each includes}}
+            <tr>
+                <td><input required type="text"  name="includes.{{@key}}" value="{{this}}"></td>
+                <td style="padding-right: .5em;">{{filePicker target=(concat "includes." @key) type="folder"}}</td>
+                    <!---->
+                <td><button type="button" data-index="{{@key}}" class="deleteIncludePathOption"><i class="fas fa-trash-alt" style="color:darkred"></i></button></td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
+    <div>
+        Exclude files with all these prefixes:
+        <table>
+            <tr>
+                <th colspan="2">Path</th>
+                <td><button type="button" id="addExcludePath"><i class="fas fa-plus"></i></button></td>
+            </tr>
+            {{#each excludes}}
+            <tr>
+                <td><input required type="text"  name="excludes.{{@key}}" value="{{this}}"></td>
+                <td style="padding-right: .5em;">{{filePicker target=(concat "excludes." @key) type="folder"}}</td>
+                    <!---->
+                <td><button type="button" data-index="{{@key}}" class="deleteExcludePathOption"><i class="fas fa-trash-alt" style="color:darkred"></i></button></td>
+            </tr>
+            {{/each}}
+        </table>
+    </div>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="submit">
-        <i class="fa fa-check"></i> OK
-    </button>
-</footer>
+            <i class="fa fa-check"></i> OK
+        </button>
+    </footer>
 </form>

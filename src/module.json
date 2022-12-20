@@ -1,35 +1,40 @@
 {
-  "name": "foundry-filepicker-favorites",
+  "id": "foundry-filepicker-favorites",
   "title": "Filepicker Improvements",
   "description": "A simple module to add favorite directories and a search to the file picker",
-  "version": "1.2.5",
-  "author": "manuel-hegner",
-  /*"authors": [
+  "version": "1.3.0",
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10.291",
+    "maximum": "10"
+  },
+  "authors": [
     {
-      "name": "",
-      "email": "",
-      "url": ""
+      "name": "manuel-hegner",
+      "flags": {}
     }
-  ],*/
+  ],
   "scripts": [],
   "esmodules": [
-    "foundry-filepicker-favorites.js"
+    "bundle.js"
   ],
   "styles": [
-    "foundry-filepicker-favorites.css"
+    "bundle.css"
   ],
-  "dependencies": [
-    {
-      "name": "lib-wrapper"
-    }
-  ],
+  "relationships": {
+    "requires": [
+      {
+        "id": "lib-wrapper",
+        "type": "module",
+        "compatibility": {}
+      }
+    ]
+  },
   "packs": [],
   "languages": [],
-  "minimumCoreVersion": "0.8.9",
-  "compatibleCoreVersion": "V9",
   "url": "https://github.com/manuel-hegner/foundry-filepicker-favorites",
   "manifest": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/latest/download/module.json",
-  "download": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/download/v1.2.5/foundry-filepicker-favorites-v1.2.5.zip",
+  "download": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/download/v1.3.0/foundry-filepicker-favorites-v1.3.0.zip",
   "license": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/LICENSE",
   "readme": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/README.md",
   "bugs": "https://github.com/manuel-hegner/foundry-filepicker-favorites/issues",

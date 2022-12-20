@@ -1,4 +1,8 @@
 import { libWrapper } from './shim';
+import { createIndex, addDocumentToIndex } from "ndx";
+import { query } from "ndx-query";
+import { toSerializable, fromSerializable } from "ndx-serializable";
+import Bottleneck from 'bottleneck';
 
 /* ------------------------------------ */
 /* Initialize module					*/
@@ -62,20 +66,22 @@ Hooks.once('ready', function() {
 			
             let maximumResults = game.settings.get("foundry-filepicker-favorites", "search-max-results");
 			let results:string[] = [];
-			let term = (data.target as string).trim().toLowerCase().split((/\s+/));
-			term=term.filter(n => n);
 
-			if(term.length > 0) {
-				for(const f of ALL_FILES) {
-					if(term.every(t=>f.name.includes(t))) {
-						if(maximumResults > 0 && results.length >= maximumResults) {
-							ui.notifications.info(`More than ${maximumResults} results for '${data.target}'`);
-							break;
-						}
-						results.push(f.file);
-					}
-				}
-			}
+			let searchResult = query(
+				SEARCH,
+				[3,1],
+				// BM25 ranking function constants:
+				1.2,  // BM25 k1 constant, controls non-linear term frequency normalization (saturation).
+				0.75, // BM25 b constant, controls to what degree document length normalizes tf values.
+				tokenize,
+				filter,
+				undefined, 
+				data.target as string,
+			);
+			searchResult.length = Math.min(searchResult.length, maximumResults);
+			searchResult.forEach(element => {
+				results.push(element.key);
+			});
 
 			return {
 				"target": data.target,
@@ -93,17 +99,47 @@ Hooks.once('ready', function() {
 });
 
 class SearchFile {
-    file:string;
+    path:string;
     name:string;
 }
 
-var ALL_FILES:SearchFile[] = [];
-Hooks.once('ready', async function() {
+var SEARCH = newSearch();
 
-	let excludes = game.settings.get("foundry-filepicker-favorites", "search-excludes");
+function newSearch() {
+	return createIndex<string>(2);
+}
+
+Hooks.once('ready', async function() {
+	if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
+	let rawCache = game.settings.get("foundry-filepicker-favorites", "search-cache");
+	if(!rawCache) {
+		console.log("foundry-filepicker-favorites | No cache found, rebuilding");
+		ui.notifications.warn("No search cache found, rebuilding cache.");
+		rebuildCache();
+		return;
+	}
+	
+	try {
+		console.log("foundry-filepicker-favorites | Loading cache from storage");
+		SEARCH = fromSerializable(JSON.parse(rawCache));
+		console.log("foundry-filepicker-favorites | Loaded cache");
+	} catch (error) {
+		ui.notifications.error("Failed to load cache, rebuilding cache.");
+		console.log("foundry-filepicker-favorites | Could not load cache, rebuilding", error);
+		rebuildCache();
+	}
+});
+
+
+export async function rebuildCache() {
+	if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
+	game.settings.set("foundry-filepicker-favorites", "search-cache", "");
+	SEARCH = newSearch();
+	let includes = game.settings.get("foundry-filepicker-favorites", "search-includes").map(encodeURI);
+	let excludes = game.settings.get("foundry-filepicker-favorites", "search-excludes").map(encodeURI);
 	let usingForge = typeof (ForgeVTT) !== "undefined" && ForgeVTT.usingTheForge;
 
-	let fp = new FilePicker({type: 'imagevideo'} as any) as any;
+	let fp = new FilePicker({type: 'imagevideo'});
 	let options = {
 		extensions: fp.extensions,
 		wildcard: false,
@@ -112,39 +148,53 @@ Hooks.once('ready', async function() {
 
 	let promises:Promise<void>[] = [];
 	for (const [key, value] of Object.entries(fp.sources)) {
-		promises.push(collectFiles(key, [(value as any).target], options));
+		promises.push(collectFiles(key, [''], options));
 	}
 	Promise.all(promises).then((values) => {
-        console.log("foundry-filepicker-favorites | Finished indexing, indexed "+ALL_FILES.length+" images");
+        console.log("foundry-filepicker-favorites | Finished indexing, storing");
+		game.settings.set("foundry-filepicker-favorites", "search-cache", JSON.stringify(toSerializable(SEARCH)));
+		ui.notifications.info("Fully rebuilt search cache");
 	});
 
 	async function collectFiles(storage:string, roots:string[], options:any):Promise<void> {
 		if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
 
 		let counter = 0;
+
+		const limiter = new Bottleneck({
+			minTime: game.settings.get("foundry-filepicker-favorites", "search-speed-limit"),
+			maxConcurrent: 1,
+		});
 	
 		let open = [...roots];
 		let target:string|undefined;
 		while((target = open.pop())!==undefined) {
 
-			if(excludes.includes(target)) {
-				console.log("foundry-filepicker-favorites | Skipping "+target+" because it is excluded");
+			let file:string = target;
+			
+			if(includes && !includes.some(v => file.startsWith(v)) && !includes.some(v => v.startsWith(file))) {
+				console.log("foundry-filepicker-favorites | Skipping "+file+" because it is not in the includes");
+				continue;
+			}
+
+			if(excludes && excludes.some(v => file.startsWith(v))) {
+				console.log("foundry-filepicker-favorites | Skipping "+file+" because it is in the excludes");
 				continue;
 			}
 
 			try {
-
-				let search = await FilePicker.browse(storage as any, target, options);
+				let search = await limiter.schedule(() => FilePicker.browse(storage as any, file, options));
 				if(search.private && !game.user?.hasRole('GAMEMASTER'))
 					continue;
 
 				//if not using the shortcut on the forge (recursive option)
-				if( ! (usingForge && (storage === "forgevtt" || (storage === 'forge-bazaar' && (target.match(/\//g)||[]).length > 0)))) {
+				if( ! (usingForge && (storage === "forgevtt" || (storage === 'forge-bazaar' && (file.match(/\//g)||[]).length > 0)))) {
 					open.push(...search.dirs);
 				}
 				
 				for(const f of search.files) {
-					ALL_FILES.push({file: f, name: f.toLowerCase()});
+					let parts = f.split("/");
+					addSearchDoc({path: f, name: parts[-1]});
 					counter++;
 				}
 			} catch (error) {
@@ -153,4 +203,23 @@ Hooks.once('ready', async function() {
 		}
         console.log("foundry-filepicker-favorites | Indexed "+counter+" images from "+storage);
 	}
-});
+}
+
+function tokenize(term:string):string[] {
+	return decodeURI(term).split(/[\W_]+|(?<![A-Z])(?=[A-Z])|(?<!\d)(?=\d)/);
+}
+
+function filter(word:string):string {
+	return word.toLocaleLowerCase();
+}
+
+function addSearchDoc(file:SearchFile) {
+	addDocumentToIndex(
+		SEARCH,
+		[a=>a.name, a=>a.path],
+		tokenize,
+		filter,
+		file.path,
+		file
+	)
+}
