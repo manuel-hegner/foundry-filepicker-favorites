@@ -13,7 +13,7 @@
   "author": "",
   "license": "",
   "devDependencies": {
-    "@league-of-foundry-developers/foundry-vtt-types": "^9.255.3",
+    "@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
     "archiver": "^5.3.1",
     "chalk": "^4.1.2",
     "fs-extra": "^10.0.1",
