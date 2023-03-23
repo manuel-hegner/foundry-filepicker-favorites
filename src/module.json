@@ -2,7 +2,7 @@
   "id": "foundry-filepicker-favorites",
   "title": "Filepicker Improvements",
   "description": "A simple module to add favorite directories and a search to the file picker",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "compatibility": {
     "minimum": "10",
     "verified": "10.291",
@@ -34,7 +34,7 @@
   "languages": [],
   "url": "https://github.com/manuel-hegner/foundry-filepicker-favorites",
   "manifest": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/latest/download/module.json",
-  "download": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/download/v1.3.0/foundry-filepicker-favorites-v1.3.0.zip",
+  "download": "https://github.com/manuel-hegner/foundry-filepicker-favorites/releases/download/v1.4.0/foundry-filepicker-favorites-v1.4.0.zip",
   "license": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/LICENSE",
   "readme": "https://github.com/manuel-hegner/foundry-filepicker-favorites/blob/main/README.md",
   "bugs": "https://github.com/manuel-hegner/foundry-filepicker-favorites/issues",

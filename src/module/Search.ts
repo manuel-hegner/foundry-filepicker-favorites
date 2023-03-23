@@ -1,8 +1,9 @@
 import { libWrapper } from './shim';
 import { createIndex, addDocumentToIndex } from "ndx";
 import { query } from "ndx-query";
-import { toSerializable, fromSerializable } from "ndx-serializable";
+import { toSerializable, fromSerializable, SerializableIndex } from "ndx-serializable";
 import Bottleneck from 'bottleneck';
+import localforage from 'localforage';
 
 /* ------------------------------------ */
 /* Initialize module					*/
@@ -109,9 +110,13 @@ function newSearch() {
 	return createIndex<string>(2);
 }
 
+function cacheKey() {
+	return "foundry-filepicker-favorites." + game.world.id + ".search-cache";
+}
+
 Hooks.once('ready', async function() {
 	if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
-	let rawCache = game.settings.get("foundry-filepicker-favorites", "search-cache");
+	let rawCache = await localforage.getItem<SerializableIndex<string>>(cacheKey());
 	if(!rawCache) {
 		console.log("foundry-filepicker-favorites | No cache found, rebuilding");
 		ui.notifications.warn("No search cache found, rebuilding cache.");
@@ -121,7 +126,7 @@ Hooks.once('ready', async function() {
 	
 	try {
 		console.log("foundry-filepicker-favorites | Loading cache from storage");
-		SEARCH = fromSerializable(JSON.parse(rawCache));
+		SEARCH = fromSerializable(rawCache);
 		console.log("foundry-filepicker-favorites | Loaded cache");
 	} catch (error) {
 		ui.notifications.error("Failed to load cache, rebuilding cache.");
@@ -133,7 +138,7 @@ Hooks.once('ready', async function() {
 
 export async function rebuildCache() {
 	if ( game.world && !game.user?.can("FILES_BROWSE") ) return;
-	game.settings.set("foundry-filepicker-favorites", "search-cache", "");
+	await localforage.removeItem(cacheKey());
 	SEARCH = newSearch();
 	let includes = game.settings.get("foundry-filepicker-favorites", "search-includes").map(encodeURI);
 	let excludes = game.settings.get("foundry-filepicker-favorites", "search-excludes").map(encodeURI);
@@ -152,7 +157,7 @@ export async function rebuildCache() {
 	}
 	Promise.all(promises).then((values) => {
         console.log("foundry-filepicker-favorites | Finished indexing, storing");
-		game.settings.set("foundry-filepicker-favorites", "search-cache", JSON.stringify(toSerializable(SEARCH)));
+		localforage.setItem(cacheKey(), toSerializable(SEARCH))
 		ui.notifications.info("Fully rebuilt search cache");
 	});
 

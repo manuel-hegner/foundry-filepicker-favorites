@@ -50,12 +50,6 @@ Hooks.once('init', async function() {
 		default: [],
 		onChange: rebuildCache
 	});
-	game.settings.register("foundry-filepicker-favorites", "search-cache", {
-		scope: "world",
-		config: false,
-		type: String,
-		default: ""
-	});
 
 	game.settings.registerMenu("foundry-filepicker-favorites", "search-excludes-menu", {
 		name: "Search Settings",
@@ -84,6 +78,8 @@ Hooks.once('ready', async function() {
 		}
 		game.settings.set("foundry-filepicker-favorites", "favorites-location", favorites);
 	}
+
+	game.settings.set("foundry-filepicker-favorites", "search-cache", null);
 });
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

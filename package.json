@@ -12,6 +12,7 @@
   "license": "",
   "dependencies": {
     "bottleneck": "^2.19.5",
+    "localforage": "^1.10.0",
     "ndx": "^1.0.2",
     "ndx-query": "^1.0.1",
     "ndx-serializable": "^1.0.0"
