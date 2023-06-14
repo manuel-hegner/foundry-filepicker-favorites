@@ -1,10 +1,8 @@
-import { Favorite } from "./module/settings";
-export {};
+export { };
 
 declare global {
     namespace ClientSettings {
         interface Values {
-            'foundry-filepicker-favorites.favorites-location': Favorite[];
             'foundry-filepicker-favorites.search-max-results': number;
             'foundry-filepicker-favorites.search-speed-limit': number;
             'foundry-filepicker-favorites.search-excludes': string[];
@@ -18,5 +16,9 @@ declare global {
 
     class ForgeAPI {
         static call(endpoint:string): Promise<any>
+    }
+
+    class libWrapper {
+        static register(module:string, override:string, f:Function, mode:'MIXED'|'WRAPPER');
     }
 }

@@ -1,9 +1,8 @@
-import { libWrapper } from './shim';
-import { createIndex, addDocumentToIndex } from "ndx";
-import { query } from "ndx-query";
-import { toSerializable, fromSerializable, SerializableIndex } from "ndx-serializable";
 import Bottleneck from 'bottleneck';
 import localforage from 'localforage';
+import { addDocumentToIndex, createIndex } from "ndx";
+import { query } from "ndx-query";
+import { SerializableIndex, fromSerializable, toSerializable } from "ndx-serializable";
 
 /* ------------------------------------ */
 /* Initialize module					*/

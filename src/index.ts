@@ -10,13 +10,12 @@ Hooks.once('init', async function() {
 
 const preloadTemplates = async function() {
 	const templatePaths = [
-		'/modules/foundry-filepicker-favorites/templates/favoritesForm.html',
 		'/modules/foundry-filepicker-favorites/templates/searchForm.html',
 	];
 
 	return loadTemplates(templatePaths);
 }
 
-export * from './module/settings';
 export * from './module/Search';
-export * from './module/Favorites';
+export * from './module/settings';
+
