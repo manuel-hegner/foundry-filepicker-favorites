@@ -1,3 +1,5 @@
+import { Favorite } from "./module/settings";
+
 export { };
 
 declare global {
@@ -7,6 +9,7 @@ declare global {
             'foundry-filepicker-favorites.search-speed-limit': number;
             'foundry-filepicker-favorites.search-excludes': string[];
             'foundry-filepicker-favorites.search-includes': string[];
+            'foundry-filepicker-favorites.favorites-location': Favorite[];
         }
     }
 

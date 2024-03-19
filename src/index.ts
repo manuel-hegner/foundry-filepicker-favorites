@@ -16,6 +16,7 @@ const preloadTemplates = async function() {
 	return loadTemplates(templatePaths);
 }
 
+export * from './module/Favorites';
 export * from './module/Search';
 export * from './module/settings';
 
