@@ -61,9 +61,8 @@ Hooks.once('ready', function() {
 		return s.searchSource;
 	}
 
-	libWrapper.register('foundry-filepicker-favorites', 'FilePicker._manageFiles', async function (wrapped:Function, data:any, options:any) {
-		if(data.storage === 'search') {
-			
+	libWrapper.register('foundry-filepicker-favorites', 'FilePicker.browse', async function (wrapped:Function, source:any, target:any, options:any) {
+		if(source === 'search') {
             let maximumResults = game.settings.get("foundry-filepicker-favorites", "search-max-results");
 			let results:string[] = [];
 
@@ -76,15 +75,21 @@ Hooks.once('ready', function() {
 				tokenize,
 				filter,
 				undefined, 
-				data.target as string,
+				target as string,
 			);
+			if(options.extensions) {
+				let extensionFilter = function(name:string) {
+					return (options.extensions as string[]).some(ext => name.endsWith(ext))
+				};
+				searchResult = searchResult.filter(e => extensionFilter(e.key))
+			}
 			searchResult.length = Math.min(searchResult.length, maximumResults);
 			searchResult.forEach(element => {
 				results.push(element.key);
 			});
 
 			return {
-				"target": data.target,
+				"target": target,
 				"private": true,
 				"dirs": [],
 				"privateDirs": [],
@@ -93,7 +98,7 @@ Hooks.once('ready', function() {
 			};
 		}
 		else {
-			return await wrapped(data, options);
+			return wrapped(source, target, options);
 		}
 	}, 'MIXED');
 });
